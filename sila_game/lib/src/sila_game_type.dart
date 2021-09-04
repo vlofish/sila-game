@@ -1,5 +1,5 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sila_game/src/sila_game_type.dart';
 import 'package:sila_game/src/sila_main_game.dart';
 
 class SilaRouteBuilder {
@@ -14,18 +14,14 @@ class SilaRouteBuilder {
 
 final silaRoutes = [
   SilaRouteBuilder(
-    route: '/sila_game_type',
-    builder: (context) => const SilaGameType(),
-  ),
-  SilaRouteBuilder(
     route: 'sila_main_game',
     builder: (context) => const SilaMainGame(),
   )
 ];
 
-void main() => runApp(SilaGame());
+class SilaGameType extends StatelessWidget {
+  const SilaGameType({Key? key}) : super(key: key);
 
-class SilaGame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -36,29 +32,39 @@ class SilaGame extends StatelessWidget {
       // TODO: Upgrade to navigation 2
       routes: Map.fromEntries(
           silaRoutes.map((sila) => MapEntry(sila.route, sila.builder))),
-      home: Home(title: 'Sila Game'),
+      home: SilaGameType2(),
     );
   }
 }
 
-class Home extends StatelessWidget {
-  final String title;
-
-  Home({required this.title});
-
+class SilaGameType2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text('Tipo de Sila'),
       ),
-      body: Center(
-        child: ElevatedButton(
-          child: Text('Acceder'),
-          onPressed: () {
-            Navigator.pushNamed(context, '/sila_game_type');
-          },
-        ),
+      body: GridView.count(
+        crossAxisCount: 1,
+        mainAxisSpacing: 10,
+        children: [
+          Container(
+            child: ElevatedButton(
+              child: Text('Animales'),
+              onPressed: () {
+                Navigator.pushNamed(context, 'sila_main_game');
+              },
+            ),
+          ),
+          Container(
+            child: ElevatedButton(
+              child: Text('Objetos'),
+              onPressed: () {
+                Navigator.pushNamed(context, '/sila_main_game');
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
