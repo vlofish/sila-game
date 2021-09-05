@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sila_game/game.dart';
 
-void main() => runApp(SilaWars());
+void main() => runApp(SilaGame());
 
-class SilaWars extends StatelessWidget {
+class SilaGame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -10,22 +11,22 @@ class SilaWars extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
       ),
-      home: Home(title: 'Sila Game'),
+      home: Game(),
     );
   }
 }
 
-class Home extends StatelessWidget {
-  final String title;
-
-  Home({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
-    );
-  }
-}
+// class Home extends StatelessWidget {
+//   final String title;
+//
+//   Home({required this.title});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text(title),
+//       ),
+//     );
+//   }
+// }
