@@ -16,7 +16,7 @@ class _GameState extends State<Game> {
   int _consonantNumber = 0; // Random().nextInt(1);
 
   /// The idea for later is to do it randomly and in order
-  void _updateSila() {
+  void _updateSyllable() {
     setState(() {
       if (_vowelNumber < VOWELS.length - 1) {
         _vowelNumber++;
@@ -45,37 +45,62 @@ class _GameState extends State<Game> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Card(
-              child: InkWell(
-                splashColor: Colors.blue.withAlpha(30),
-                onTap: () {
-                  print('A sound saying the syllable must be heard.');
-                },
-                child: SizedBox(
-                  width: 300,
-                  height: 90,
-                  child: Center(
-                    child: Text(
-                      syllable.toUpperCase(),
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 80),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Card(
+                  child: InkWell(
+                    splashColor: Colors.blue.withAlpha(30),
+                    onTap: () {
+                      print('A sound with the sound of the word.');
+                    },
+                    child: SizedBox(
+                      width: 100,
+                      height: 90,
+                      child: Center(
+                        child: Text(
+                          CONSONANTS[_consonantNumber].toUpperCase(),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 80),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
+                Card(
+                  child: InkWell(
+                    splashColor: Colors.blue.withAlpha(30),
+                    onTap: () {
+                      print('A sound saying the syllable must be heard.');
+                    },
+                    child: SizedBox(
+                      width: 100,
+                      height: 90,
+                      child: Center(
+                        child: Text(
+                          VOWELS[_vowelNumber].toUpperCase(),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 80),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             Image(
               image: AssetImage(syllableImagePath),
               height: 250,
+              semanticLabel: 'TBD: tell the name of the image displayed',
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        tooltip: 'Enviar',
+        tooltip: 'Nueva Silaba',
         child: Icon(Icons.loop),
         onPressed: () {
-          _updateSila();
+          _updateSyllable();
         },
       ),
     );
