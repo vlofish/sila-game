@@ -15,18 +15,3 @@ class SilaGame extends StatelessWidget {
     );
   }
 }
-
-// class Home extends StatelessWidget {
-//   final String title;
-//
-//   Home({required this.title});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(title),
-//       ),
-//     );
-//   }
-// }
