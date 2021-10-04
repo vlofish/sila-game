@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:soundpool/soundpool.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class Game extends StatefulWidget {
   @override
@@ -19,7 +18,7 @@ class _GameState extends State<Game> {
   @override
   void initState() {
     super.initState();
-    _initPool(_soundPoolOptions);
+    _initSoundPool(_soundPoolOptions);
   }
 
   @override
@@ -28,7 +27,7 @@ class _GameState extends State<Game> {
       return Material(
         child: Center(
           child: RaisedButton(
-            onPressed: () => _initPool(_soundPoolOptions),
+            onPressed: () => _initSoundPool(_soundPoolOptions),
             child: Text("Init Soundpool"),
           ),
         ),
@@ -36,19 +35,19 @@ class _GameState extends State<Game> {
     } else {
       return SimpleApp(
         pool: _pool!,
-        onOptionsChange: _initPool,
+        onOptionsChange: _initSoundPool,
       );
     }
   }
 
-  void _initPool(SoundpoolOptions soundPoolOptions) {
-    print('* --- INITIATING POOL');
+  void _initSoundPool(SoundpoolOptions soundPoolOptions) {
+    print('* --- Initializing Sound Pool.');
     _pool?.dispose();
 
     setState(() {
       _soundPoolOptions = soundPoolOptions;
       _pool = Soundpool.fromOptions(options: _soundPoolOptions);
-      print('* --- POOL UPDATED: $_pool');
+      print('* --- Sound Pool State Set: $_pool');
     });
   }
 
@@ -116,60 +115,25 @@ class _SimpleAppState extends State<SimpleApp> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Card(
-                  child: InkWell(
-                    splashColor: Colors.blue.withAlpha(30),
-                    onTap: () {
-                      _playConsonant(_consonantNumber);
-                    },
-                    child: SizedBox(
-                      width: 100,
-                      height: 90,
-                      child: Center(
-                        child: Text(
-                          CONSONANTS[_consonantNumber].toUpperCase(),
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 80),
-                        ),
-                      ),
-                    ),
-                  ),
+                GameCard(
+                  cardType: "text",
+                  cardFill: CONSONANTS[_consonantNumber].toUpperCase(),
+                  cardFunction: _playConsonant,
+                  cardSoundId: _consonantNumber,
                 ),
-                Card(
-                  child: InkWell(
-                    splashColor: Colors.blue.withAlpha(30),
-                    onTap: () {
-                      _playVowel(_vowelNumber);
-                    },
-                    child: SizedBox(
-                      width: 100,
-                      height: 90,
-                      child: Center(
-                        child: Text(
-                          VOWELS[_vowelNumber].toUpperCase(),
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 80),
-                        ),
-                      ),
-                    ),
-                  ),
+                GameCard(
+                  cardType: "text",
+                  cardFill: VOWELS[_vowelNumber].toUpperCase(),
+                  cardFunction: _playVowel,
+                  cardSoundId: _vowelNumber,
                 ),
               ],
             ),
-            Card(
-              child: InkWell(
-                splashColor: Colors.blue.withAlpha(30),
-                onTap: () {
-                  _playImageSound();
-                },
-                child: SizedBox(
-                  child: Image(
-                    image: AssetImage(syllableImagePath),
-                    height: 250,
-                    semanticLabel: 'TODO: tell the name of the image displayed',
-                  ),
-                ),
-              ),
+            GameCard(
+              cardType: "image",
+              cardFill: syllableImagePath,
+              cardFunction: _playImageSound,
+              cardSoundId: 0,
             ),
           ],
         ),
@@ -229,11 +193,71 @@ class _SimpleAppState extends State<SimpleApp> {
     await _soundPool.play(_vowelSound[vowelNumber]);
   }
 
-  Future<void> _playImageSound() async {
+  Future<void> _playImageSound(int nu) async {
     var imageAssetSound =
         await rootBundle.load("assets/sounds/water-droplet.mp3");
     var soundPoolWithImageSound = await _soundPool.load(imageAssetSound);
     // var _imageSound = await soundPoolWithImageSound;
     await _soundPool.play(soundPoolWithImageSound);
+  }
+}
+
+class GameCard extends StatelessWidget {
+  final String cardType;
+  final String cardFill;
+  final int cardSoundId;
+  final Function cardFunction;
+
+  GameCard({
+    required this.cardType,
+    required this.cardFill,
+    required this.cardFunction,
+    required this.cardSoundId,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: InkWell(
+        splashColor: Colors.blue.withAlpha(30),
+        onTap: () {
+          cardFunction(cardSoundId);
+        },
+        child: SizedBox(
+          width: this.cardType == "text" ? 100 : null,
+          height: this.cardType == "text" ? 90 : null,
+          child: Center(
+            child: GameCardFill(cardType: cardType, cardFill: cardFill),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class GameCardFill extends StatelessWidget {
+  final String cardFill;
+  final String cardType;
+
+  GameCardFill({required this.cardType, required this.cardFill});
+
+  @override
+  Widget build(BuildContext context) {
+    return fillerWidget();
+  }
+
+  Widget fillerWidget() {
+    if (cardType == "text") {
+      return Text(
+        cardFill,
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 80),
+      );
+    }
+
+    return Image(
+      image: AssetImage(cardFill),
+      height: 250,
+      semanticLabel: 'TODO: tell the name of the image displayed',
+    );
   }
 }
